@@ -20,7 +20,7 @@ The system follows a continuous feedback loop:
 4. **Execution:** The logic compares distances and commands the L298N driver to turn the vehicle toward the path with maximum clearance.
 
 ## 💻 Code Structure
-- The source code is located in the [`src/`](./src/) directory.
+- The source code is located in the [`src/`](./src/main.ino) directory.
 
 ## 📸 Demo
 *(Coming soon: A video demonstration of the vehicle in action will be uploaded here)*
