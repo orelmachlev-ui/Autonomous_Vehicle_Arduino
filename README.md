@@ -26,4 +26,4 @@ The system follows a continuous feedback loop:
 Check out the video below to see the vehicle's autonomous navigation logic and obstacle avoidance system in real-time.
 
 ### 🎥 Watch the Demo:
-[**Click here to watch the video demo**](LINK_TO_YOUR_VIDEO_OR_GIF)
+[**Click here to watch the video demo**](./assets)
