@@ -23,4 +23,12 @@ The system follows a continuous feedback loop:
 - The source code is located in the [`src/`](./src/main.ino) directory.
 
 ## 📸 Demo
-*(Coming soon: A video demonstration of the vehicle in action will be uploaded here)*
+
+
+## 📸 Demo in Action
+Check out the video below to see the vehicle's autonomous navigation logic and obstacle avoidance system in real-time.
+
+
+
+### 🎥 Watch the Demo:
+[**Click here to watch the video demo**](LINK_TO_YOUR_VIDEO_OR_GIF)
