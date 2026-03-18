@@ -14,9 +14,11 @@ const int led_1 = 10;
 const int led_2 = 13;
 
 
+
 static float right = 0;
 static float left = 0;
 static float straight = 0;
+
 
 
 void forward() 
@@ -25,10 +27,9 @@ void forward()
   digitalWrite(pin2A, HIGH);
   digitalWrite(pin1B, LOW);
   digitalWrite(pin2B, HIGH);
-  analogWrite(speedA, 255);
-  analogWrite(speedB, 135);
+  analogWrite(speedA, 236);
+  analogWrite(speedB, 255);
 }
-
 
 void turn_right(int speed) 
 {
@@ -38,8 +39,8 @@ void turn_right(int speed)
   digitalWrite(pin1B, HIGH);
   digitalWrite(pin2B, LOW);
   analogWrite(speedB, speed);
+  delay(700);
 }
-
 
 void turn_left(int speed) 
 {
@@ -49,31 +50,37 @@ void turn_left(int speed)
   digitalWrite(pin1B, LOW);
   digitalWrite(pin2B, HIGH);
   analogWrite(speedB, speed);
+  delay(720);
 }
-
 
 void backward_to_left() 
 {
   turn_left(255);
-  delay(2370);
+  delay(647);
 }
-
 
 void backward_to_right() 
 {
   turn_right(255);
-  delay(2370);
+  delay(640);
 }
 
-
-void stop () 
+void stop(int time) 
 {
+  digitalWrite(pin1A, HIGH);
+  digitalWrite(pin2A, LOW);
+  analogWrite(speedA, 150);
+  digitalWrite(pin1B, HIGH);
+  digitalWrite(pin2B, LOW);
+  analogWrite(speedB, 150);
+  delay(time);
   digitalWrite(pin1A, LOW);
   digitalWrite(pin2A, LOW);
   analogWrite(speedA, 0);
   digitalWrite(pin1B, LOW);
   digitalWrite(pin2B, LOW);
   analogWrite(speedB, 0);
+  delay(100);
 }
 
 
@@ -92,11 +99,11 @@ float distance_sensor_activation(int triger, int echo)
 }
 
 
-float getDistanceFiltered(int triger, int echo) 
+float getDistanceFiltered(int triger, int echo, int times) 
 {
   float sum = 0;
   int count = 0;
-  for (int i = 0; i < 7; i++) 
+  for (int i = 0; i < times; i++) 
   {
     float d = distance_sensor_activation(triger, echo);  
     if (d < 100 and d > 2)
@@ -115,28 +122,28 @@ float straight_distance(int triger, int echo)
 {
   myServo.write(87);
   delay(300);
-  return getDistanceFiltered(triger, echo);
+  return getDistanceFiltered(triger, echo, 5);
 }
 
 
 float left_distance(int triger, int echo)
 {
   myServo.write(175);
-  delay(500);
-  return getDistanceFiltered(triger, echo);
+  delay(600);
+  return getDistanceFiltered(triger, echo, 5);
 }
 
 
 float right_distance(int triger, int echo)
 {
   myServo.write(5);
-  delay(500);
-  return getDistanceFiltered(triger, echo);
+  delay(600);
+  return getDistanceFiltered(triger, echo, 5);
 }
 
 void cant_go ()
 {
-  for (int i=0; i<40; i++)
+  for (int i=0; i<30; i++)
   {
     digitalWrite(led_1, HIGH);
     digitalWrite(led_2, LOW);
@@ -149,48 +156,67 @@ void cant_go ()
 }
 
 
+void start()
+{
+  delay(600); 
+  digitalWrite(led_1, HIGH);
+  digitalWrite(led_2, LOW);
+  delay(700); 
+  digitalWrite(led_1, LOW);
+  digitalWrite(led_2, HIGH);
+  delay(700); 
+  digitalWrite(led_1, HIGH);
+  digitalWrite(led_2, HIGH);
+  delay(800); 
+  digitalWrite(led_1, LOW);
+  digitalWrite(led_2, LOW);
+}
+
+
 void minimum_distance(float straight_dist)
 {
-  if (straight_dist < 30 and straight_dist > 0)
+  if (straight_dist < 25 and straight_dist > 0)
   {
-    stop();
-    delay(500);
+    stop(170);
+    delay(400);
     left = left_distance(triger, echo);
     delay(500);
     right = right_distance(triger, echo);
     delay(500);
     straight = straight_distance(triger, echo);
     delay(500);
-    if (straight > 30)
+    if (straight > 25)
     {
       forward();
       delay(400);
     }
-    else if (right >= left and right > 40)
+    else if (right >= left and right > 30)
     {
       turn_right(255);
-      delay(1180);
+      stop(10);
+      delay(200);
     }
-    else if (right < left and left > 40)
+    else if (right < left and left > 30)
     {
       turn_left(255);
-      delay(1180);
+      stop(10);
+      delay(200);
     }
-    else if (right >= left and right < 40 and right > 20)
+    else if (right >= left and right < 30 and right > 16)
     {
       backward_to_right();
-      stop();
-      delay(500);
+      stop(10);
+      delay(200);
     }
-    else if  (right <  left and left < 40 and left > 20)
+    else if (right <  left and left < 30 and left > 16)
     {
       backward_to_left();
-      stop();
-      delay(500);      
+      stop(10);
+      delay(200);
     }
     else 
     {
-      stop();
+      stop(10);
       cant_go();
     }
   }
@@ -199,6 +225,7 @@ void minimum_distance(float straight_dist)
     forward();
   }
 }
+
 
 
 void setup() 
@@ -216,11 +243,11 @@ void setup()
   pinMode(led_1, OUTPUT);
   pinMode(led_2, OUTPUT);
   Serial.begin(9600);
-  delay(1000);
+  start();
 }
 
 void loop() 
 {
- straight = getDistanceFiltered(triger, echo);
+ straight = getDistanceFiltered(triger, echo, 2);
  minimum_distance(straight);
 }
